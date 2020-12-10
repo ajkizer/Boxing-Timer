@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Jumbotron } from "react-bootstrap";
+import { Button, Card, Badge } from "react-bootstrap";
 import roundAlert from "../utils/round-alert2.wav";
 import bell from "../utils/starting-bell.mp3";
 
@@ -9,6 +9,10 @@ const Timer = ({ options, roundHandler, currentRound }) => {
   const [isRestPeriod, toggleIsRestPeriod] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [counter, setCounter] = useState(0);
+  const [buttonSettings, setButtonSettings] = useState({
+    variant: "info",
+    text: "Customize your options and hit start",
+  });
 
   const displayHandler = () => {
     if (counter === 0 && !countdownActive) {
@@ -47,10 +51,20 @@ const Timer = ({ options, roundHandler, currentRound }) => {
       if (isRestPeriod === true) {
         setCounter(options.timeInBreaks);
         roundHandler(currentRound + 1);
-
+        setButtonSettings({
+          ...buttonSettings,
+          text: "REST",
+          variant: "danger",
+        });
         toggleIsRestPeriod(false);
       } else {
         setCounter(options.timeInRound);
+        setButtonSettings({
+          ...buttonSettings,
+          text: "FIGHT!",
+          variant: "success",
+        });
+
         toggleIsRestPeriod(true);
       }
     }
@@ -74,13 +88,16 @@ const Timer = ({ options, roundHandler, currentRound }) => {
       setDisplay("0:00");
       toggleCountdown(true);
       toggleIsRestPeriod(false);
+      setButtonSettings({
+        ...buttonSettings,
+        text: "Customize your options and hit start",
+        variant: "info",
+      });
     }
   };
   return (
     <Card className="light-box-shadow">
-      <Button variant={isRestPeriod ? "danger" : "success"}>
-        {isRestPeriod && isActive ? "REST!" : "FIGHT!"}
-      </Button>
+      <Badge variant={buttonSettings.variant}>{buttonSettings.text}</Badge>
       <Card.Title className="timer-display">{display}</Card.Title>
 
       <div className="mx-auto">
