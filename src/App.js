@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Card, Row, Col, Container, Button, ListGroup } from "react-bootstrap";
+import React, { useState } from "react";
+import { Row, Col, Container } from "react-bootstrap";
 import "./App.css";
 import Rounds from "./components/Rounds";
 import Timer from "./components/Timer";

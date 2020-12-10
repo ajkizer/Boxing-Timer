@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Card, Badge } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 const Options = ({ options, changeHandler }) => {
   const { timeInRound, timeInBreaks, countdown, numberOfRounds } = options;
