@@ -13,27 +13,6 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     text: "Customize your options and hit start",
   });
 
-  const displayHandler = () => {
-    if (counter === 0 && !countdownActive) {
-      setDisplay("0:00");
-      let bellAudio = new Audio(bell);
-      bellAudio.play();
-    }
-
-    const seconds = counter % 60;
-    const minutes = Math.floor(counter / 60);
-
-    let secondsText;
-
-    if (seconds < 10) {
-      secondsText = `0${seconds}`;
-    } else {
-      secondsText = seconds.toString();
-    }
-
-    setDisplay(`${minutes}:${secondsText}`);
-  };
-
   const workout = {
     resetWorkout: () => {
       setIsActive(false);
@@ -76,6 +55,11 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     handleCountdown: () => {
       if (!countdownActive) return;
       toggleCountdown(false);
+      setButtonSettings({
+        ...buttonSettings,
+        text: "GET READY!",
+        variant: "warning",
+      });
       setCounter((counter) => counter + options.countdown);
     },
 
@@ -95,14 +79,37 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     },
   };
 
-  const runCounterHandlers = () => {
-    counterHandlers.handleCountdown();
-    counterHandlers.handleRoundEnd();
-    counterHandlers.handleRoundStart();
-  };
+  const timer = {
+    runCounterHandlers: () => {
+      counterHandlers.handleCountdown();
+      counterHandlers.handleRoundEnd();
+      counterHandlers.handleRoundStart();
+    },
 
-  const toggleTimer = () => {
-    setIsActive(!isActive);
+    toggleTimer: () => {
+      setIsActive(!isActive);
+    },
+
+    displayHandler: () => {
+      if (counter === 0 && !countdownActive) {
+        setDisplay("0:00");
+        let bellAudio = new Audio(bell);
+        bellAudio.play();
+      }
+
+      const seconds = counter % 60;
+      const minutes = Math.floor(counter / 60);
+
+      let secondsText;
+
+      if (seconds < 10) {
+        secondsText = `0${seconds}`;
+      } else {
+        secondsText = seconds.toString();
+      }
+
+      setDisplay(`${minutes}:${secondsText}`);
+    },
   };
 
   useEffect(() => {
@@ -112,13 +119,13 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     }
 
     if (isActive) {
-      runCounterHandlers();
+      timer.runCounterHandlers();
       intervalID = setInterval(() => {
         setCounter((counter) => counter - 1);
       }, 1000);
     }
 
-    displayHandler();
+    timer.displayHandler();
 
     return () => clearInterval(intervalID);
   }, [isActive, counter]);
@@ -131,7 +138,7 @@ const Timer = ({ options, roundHandler, currentRound }) => {
       <Card.Title className="timer-display">{display}</Card.Title>
 
       <div className="mx-auto p-3">
-        <Button className="m-1 pr-3 pl-3" onClick={() => toggleTimer()}>
+        <Button className="m-1 pr-3 pl-3" onClick={() => timer.toggleTimer()}>
           {!isActive ? (
             <i className="fas fa-play"></i>
           ) : (
