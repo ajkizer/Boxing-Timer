@@ -53,55 +53,76 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     });
   };
 
+  const startRestBreak = () => {
+    setCounter(options.timeInBreaks);
+    roundHandler(currentRound + 1);
+    setButtonSettings({
+      ...buttonSettings,
+      text: "REST",
+      variant: "danger",
+    });
+    toggleIsRestPeriod(false);
+  };
+
+  const startRound = () => {
+    setCounter(options.timeInRound);
+    setButtonSettings({
+      ...buttonSettings,
+      text: "FIGHT!",
+      variant: "success",
+    });
+
+    toggleIsRestPeriod(true);
+  };
+
+  const checkCountdown = () => {
+    if (!countdownActive) return;
+    toggleCountdown(false);
+    setCounter((counter) => counter + options.countdown);
+  };
+
+  const checkWorkoutCompletion = () => {
+    if (countdownActive || counter !== 0 || !isRestPeriod) return;
+
+    if (options.numberOfRounds === currentRound) {
+      resetWorkout();
+    } else {
+      startRestBreak();
+    }
+  };
+
+  const checkRound = () => {
+    if (counter !== 0 || countdownActive || isRestPeriod) return;
+    startRound();
+  };
+
+  const counterChecks = () => {
+    checkCountdown();
+    checkWorkoutCompletion();
+    checkRound();
+  };
+
+  const toggleTimer = () => {
+    setIsActive(!isActive);
+  };
+
   useEffect(() => {
     let intervalID;
     if (currentRound > options.numberOfRounds) {
       resetWorkout();
     }
 
-    if (countdownActive && isActive) {
-      toggleCountdown(false);
-      setCounter((counter) => counter + options.countdown);
-      return;
-    }
-    if (counter === 0 && isActive) {
-      if (isRestPeriod === true) {
-        if (options.numberOfRounds === currentRound) {
-          resetWorkout();
-          return;
-        }
-        setCounter(options.timeInBreaks);
-        roundHandler(currentRound + 1);
-        setButtonSettings({
-          ...buttonSettings,
-          text: "REST",
-          variant: "danger",
-        });
-        toggleIsRestPeriod(false);
-      } else {
-        setCounter(options.timeInRound);
-        setButtonSettings({
-          ...buttonSettings,
-          text: "FIGHT!",
-          variant: "success",
-        });
-
-        toggleIsRestPeriod(true);
-      }
-    }
-
-    displayHandler();
     if (isActive) {
+      counterChecks();
       intervalID = setInterval(() => {
         setCounter((counter) => counter - 1);
       }, 1000);
     }
+
+    displayHandler();
+
     return () => clearInterval(intervalID);
   }, [isActive, counter]);
-
-  const toggleTimer = () => {
-    setIsActive(!isActive);
-  };
 
   return (
     <Card className="light-box-shadow">
