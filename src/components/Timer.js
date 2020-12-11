@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Badge } from "react-bootstrap";
-import roundAlert from "../utils/round-alert2.wav";
 import bell from "../utils/starting-bell.mp3";
 
 const Timer = ({ options, roundHandler, currentRound }) => {
@@ -19,87 +18,87 @@ const Timer = ({ options, roundHandler, currentRound }) => {
       setDisplay("0:00");
       let bellAudio = new Audio(bell);
       bellAudio.play();
-      return;
-    } else if (
-      counter % 60 === 0 &&
-      counter !== options.timeInRound &&
-      counter !== 0
-    ) {
-      let roundAlertAudio = new Audio(roundAlert);
-      roundAlertAudio.play();
     }
+
     const seconds = counter % 60;
     const minutes = Math.floor(counter / 60);
+
     let secondsText;
+
     if (seconds < 10) {
       secondsText = `0${seconds}`;
     } else {
       secondsText = seconds.toString();
     }
+
     setDisplay(`${minutes}:${secondsText}`);
   };
 
-  const resetWorkout = () => {
-    setIsActive(false);
-    setCounter(0);
-    setDisplay("0:00");
-    toggleCountdown(true);
-    toggleIsRestPeriod(false);
-    roundHandler(1);
-    setButtonSettings({
-      ...buttonSettings,
-      text: "Customize your options and hit start",
-      variant: "info",
-    });
+  const workout = {
+    resetWorkout: () => {
+      setIsActive(false);
+      setCounter(0);
+      setDisplay("0:00");
+      toggleCountdown(true);
+      toggleIsRestPeriod(false);
+      roundHandler(1);
+      setButtonSettings({
+        ...buttonSettings,
+        text: "Customize your options and hit start",
+        variant: "info",
+      });
+    },
+
+    startRestBreak: () => {
+      setCounter(options.timeInBreaks);
+      roundHandler(currentRound + 1);
+      setButtonSettings({
+        ...buttonSettings,
+        text: "REST",
+        variant: "danger",
+      });
+      toggleIsRestPeriod(false);
+    },
+
+    startRound: () => {
+      setCounter(options.timeInRound);
+      setButtonSettings({
+        ...buttonSettings,
+        text: "FIGHT!",
+        variant: "success",
+      });
+
+      toggleIsRestPeriod(true);
+    },
   };
 
-  const startRestBreak = () => {
-    setCounter(options.timeInBreaks);
-    roundHandler(currentRound + 1);
-    setButtonSettings({
-      ...buttonSettings,
-      text: "REST",
-      variant: "danger",
-    });
-    toggleIsRestPeriod(false);
+  const counterHandlers = {
+    handleCountdown: () => {
+      if (!countdownActive) return;
+      toggleCountdown(false);
+      setCounter((counter) => counter + options.countdown);
+    },
+
+    handleRoundEnd: () => {
+      if (countdownActive || counter !== 0 || !isRestPeriod) return;
+
+      if (options.numberOfRounds === currentRound) {
+        workout.resetWorkout();
+      } else {
+        workout.startRestBreak();
+      }
+    },
+
+    handleRoundStart: () => {
+      if (counter !== 0 || countdownActive || isRestPeriod) return;
+      workout.startRound();
+    },
   };
 
-  const startRound = () => {
-    setCounter(options.timeInRound);
-    setButtonSettings({
-      ...buttonSettings,
-      text: "FIGHT!",
-      variant: "success",
-    });
-
-    toggleIsRestPeriod(true);
-  };
-
-  const checkCountdown = () => {
-    if (!countdownActive) return;
-    toggleCountdown(false);
-    setCounter((counter) => counter + options.countdown);
-  };
-
-  const checkWorkoutCompletion = () => {
-    if (countdownActive || counter !== 0 || !isRestPeriod) return;
-
-    if (options.numberOfRounds === currentRound) {
-      resetWorkout();
-    } else {
-      startRestBreak();
-    }
-  };
-
-  const checkRound = () => {
-    if (counter !== 0 || countdownActive || isRestPeriod) return;
-    startRound();
-  };
-
-  const counterChecks = () => {
-    checkCountdown();
-    checkWorkoutCompletion();
-    checkRound();
+  const runCounterHandlers = () => {
+    counterHandlers.handleCountdown();
+    counterHandlers.handleRoundEnd();
+    counterHandlers.handleRoundStart();
   };
 
   const toggleTimer = () => {
@@ -109,11 +108,11 @@ const Timer = ({ options, roundHandler, currentRound }) => {
   useEffect(() => {
     let intervalID;
     if (currentRound > options.numberOfRounds) {
-      resetWorkout();
+      workout.resetWorkout();
     }
 
     if (isActive) {
-      counterChecks();
+      runCounterHandlers();
       intervalID = setInterval(() => {
         setCounter((counter) => counter - 1);
       }, 1000);
@@ -142,7 +141,7 @@ const Timer = ({ options, roundHandler, currentRound }) => {
         <Button
           disabled={isActive}
           className="m-1 pr-3 pl-3"
-          onClick={() => resetWorkout()}
+          onClick={() => workout.resetWorkout()}
         >
           <i className="fas fa-stop"></i>
         </Button>
