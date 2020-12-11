@@ -44,8 +44,13 @@
 }
 
 .timer-display {
-  margin: auto;
+  margin: 2rem auto 0;
   font-size: 4rem;
   letter-spacing: 1rem;
   font-family: monospace;
+  padding: 2rem;
+}
+
+.timer-header {
+  padding: 1rem;
 }

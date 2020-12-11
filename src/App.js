@@ -20,7 +20,7 @@ const App = () => {
 
   const roundHandler = (round) => setCurrentRound(round);
   return (
-    <Container className="p-4">
+    <Container className="p-4 mt-4">
       <Row>
         <Col className="rounds" md={{ span: 12 }}>
           <Rounds

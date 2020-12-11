@@ -39,8 +39,25 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     setDisplay(`${minutes}:${secondsText}`);
   };
 
+  const resetWorkout = () => {
+    setIsActive(false);
+    setCounter(0);
+    setDisplay("0:00");
+    toggleCountdown(true);
+    toggleIsRestPeriod(false);
+    roundHandler(1);
+    setButtonSettings({
+      ...buttonSettings,
+      text: "Customize your options and hit start",
+      variant: "info",
+    });
+  };
+
   useEffect(() => {
     let intervalID;
+    if (currentRound > options.numberOfRounds) {
+      resetWorkout();
+    }
 
     if (countdownActive && isActive) {
       toggleCountdown(false);
@@ -49,6 +66,10 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     }
     if (counter === 0 && isActive) {
       if (isRestPeriod === true) {
+        if (options.numberOfRounds === currentRound) {
+          resetWorkout();
+          return;
+        }
         setCounter(options.timeInBreaks);
         roundHandler(currentRound + 1);
         setButtonSettings({
@@ -82,34 +103,27 @@ const Timer = ({ options, roundHandler, currentRound }) => {
     setIsActive(!isActive);
   };
 
-  const resetWorkout = () => {
-    if (!isActive) {
-      setCounter(0);
-      setDisplay("0:00");
-      toggleCountdown(true);
-      toggleIsRestPeriod(false);
-      setButtonSettings({
-        ...buttonSettings,
-        text: "Customize your options and hit start",
-        variant: "info",
-      });
-    }
-  };
   return (
     <Card className="light-box-shadow">
-      <Badge variant={buttonSettings.variant}>{buttonSettings.text}</Badge>
+      <Badge variant={buttonSettings.variant} className="timer-header">
+        {buttonSettings.text}
+      </Badge>
       <Card.Title className="timer-display">{display}</Card.Title>
 
-      <div className="mx-auto">
-        <Button className="m-1" onClick={() => toggleTimer()}>
-          {isActive ? "Stop" : "Start"}
+      <div className="mx-auto p-3">
+        <Button className="m-1 pr-3 pl-3" onClick={() => toggleTimer()}>
+          {!isActive ? (
+            <i className="fas fa-play"></i>
+          ) : (
+            <i className="fas fa-pause"></i>
+          )}
         </Button>
         <Button
           disabled={isActive}
-          className="m-1"
+          className="m-1 pr-3 pl-3"
           onClick={() => resetWorkout()}
         >
-          End
+          <i className="fas fa-stop"></i>
         </Button>
       </div>
     </Card>
