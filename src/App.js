@@ -11,7 +11,7 @@ const App = () => {
     timeInRound: 180,
     timeInBreaks: 60,
     countdown: 10,
-    numberOfRounds: 8,
+    numberOfRounds: 12,
   });
 
   const changeHandler = (e) => {
