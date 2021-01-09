@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Row, Col, Card } from "react-bootstrap";
+import { Form, Col, Card } from "react-bootstrap";
 
 const Options = ({ options, changeHandler }) => {
   const { timeInRound, timeInBreaks, countdown, numberOfRounds } = options;
