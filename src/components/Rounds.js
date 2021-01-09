@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Card, Form } from "react-bootstrap";
-import { styles } from "../utils/workoutTypes";
+import React from "react";
+import { Card } from "react-bootstrap";
+
 const Rounds = ({ currentRound, numberOfRounds }) => {
   return (
-    <Card className="light-box-shadow">
-      <Card.Header>
-        <Card.Title>
-          Round {currentRound}/{numberOfRounds}
-        </Card.Title>
-      </Card.Header>
+    <Card className="light-box-shadow rounds-card">
+      <Card.Title className="rounds-card__display--sub">ROUND</Card.Title>
+      <Card.Title className="rounds-card__display--main">
+        {currentRound}
+      </Card.Title>
     </Card>
   );
 };

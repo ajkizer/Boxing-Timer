@@ -20,23 +20,24 @@ const App = () => {
 
   const roundHandler = (round) => setCurrentRound(round);
   return (
-    <Container className="p-4 mt-4">
-      <Row>
-        <Col className="rounds" md={{ span: 12 }}>
+    <Container className="_innerContainer">
+      <Row className="top-row">
+        <Col className="rounds" xs={{ span: 2 }} md={{ span: 4 }}>
           <Rounds
             currentRound={currentRound}
             numberOfRounds={options.numberOfRounds}
           />
-
-          <Timer
-            roundHandler={roundHandler}
-            currentRound={currentRound}
-            options={options}
-          />
-
+        </Col>
+        <Col xs={{ span: 10 }} md={{ span: 8 }}>
           <Options options={options} changeHandler={changeHandler} />
         </Col>
       </Row>
+
+      <Timer
+        roundHandler={roundHandler}
+        currentRound={currentRound}
+        options={options}
+      />
     </Container>
   );
 };

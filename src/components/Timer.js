@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Badge } from "react-bootstrap";
+import { Button, Card, Row, Col, Container } from "react-bootstrap";
 import bell from "../utils/starting-bell.mp3";
 
 const Timer = ({ options, roundHandler, currentRound }) => {
@@ -10,7 +10,7 @@ const Timer = ({ options, roundHandler, currentRound }) => {
   const [counter, setCounter] = useState(0);
   const [buttonSettings, setButtonSettings] = useState({
     variant: "info",
-    text: "Customize your options and hit start",
+    text: "Select options and hit start",
   });
 
   const workout = {
@@ -23,7 +23,7 @@ const Timer = ({ options, roundHandler, currentRound }) => {
       roundHandler(1);
       setButtonSettings({
         ...buttonSettings,
-        text: "Customize your options and hit start",
+        text: "Select options and hit start",
         variant: "info",
       });
     },
@@ -131,29 +131,57 @@ const Timer = ({ options, roundHandler, currentRound }) => {
   }, [isActive, counter]);
 
   return (
-    <Card className="light-box-shadow">
-      <Badge variant={buttonSettings.variant} className="timer-header">
+    <Container>
+      <Row>
+        <Col
+          xs={{ span: 12 }}
+          md={{ span: 2 }}
+          className={`light-box-shadow red-light ${
+            isActive && !isRestPeriod && "active"
+          }`}
+        ></Col>
+        <Col xs={{ span: 12 }} md={{ span: 8 }} className="p-0">
+          <Card className="light-box-shadow timer-card">
+            {/* <Badge variant={buttonSettings.variant} className="timer-header">
         {buttonSettings.text}
-      </Badge>
-      <Card.Title className="timer-display">{display}</Card.Title>
+      </Badge> */}
+            <Card.Title className="activity-status">
+              {buttonSettings.text}
+            </Card.Title>
+            <Card.Title className="timer-display">{display}</Card.Title>
 
-      <div className="mx-auto p-3">
-        <Button className="m-1 pr-3 pl-3" onClick={() => timer.toggleTimer()}>
-          {!isActive ? (
-            <i className="fas fa-play"></i>
-          ) : (
-            <i className="fas fa-pause"></i>
-          )}
-        </Button>
-        <Button
-          disabled={isActive}
-          className="m-1 pr-3 pl-3"
-          onClick={() => workout.resetWorkout()}
-        >
-          <i className="fas fa-stop"></i>
-        </Button>
-      </div>
-    </Card>
+            <div className="mx-auto p-3">
+              <Button
+                className="m-1 pr-3 pl-3 light-box-shadow-2"
+                variant="dark"
+                onClick={() => timer.toggleTimer()}
+              >
+                {!isActive ? (
+                  <i className="fas fa-play"></i>
+                ) : (
+                  <i className="fas fa-pause"></i>
+                )}
+              </Button>
+              <Button
+                disabled={isActive}
+                className="m-1 pr-3 pl-3 light-box-shadow-2"
+                variant="dark"
+                onClick={() => workout.resetWorkout()}
+              >
+                <i className="fas fa-stop"></i>
+              </Button>
+            </div>
+          </Card>
+        </Col>
+        <Col
+          xs={{ span: 12 }}
+          md={{ span: 2 }}
+          className={`light-box-shadow green-light ${
+            isActive && isRestPeriod && "active"
+          }`}
+        ></Col>
+      </Row>
+    </Container>
   );
 };
 

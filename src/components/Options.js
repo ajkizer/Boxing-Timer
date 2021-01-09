@@ -1,14 +1,14 @@
 import React from "react";
-import { Form, Badge } from "react-bootstrap";
+import { Form, Row, Col, Card } from "react-bootstrap";
 
 const Options = ({ options, changeHandler }) => {
   const { timeInRound, timeInBreaks, countdown, numberOfRounds } = options;
 
   return (
-    <>
-      <Form inline className="justify-content-center mt-4">
+    <Card className="options-card light-box-shadow">
+      <Form inline className="justify-content-center">
         <Form.Group className="mr-2 mb-2">
-          <Badge variant="info" className="p-2">
+          <Col>
             <Form.Label>Time in Round</Form.Label>{" "}
             <Form.Control
               as="select"
@@ -23,11 +23,11 @@ const Options = ({ options, changeHandler }) => {
               <option value={180}>3:00</option>
               <option value={300}>5:00</option>
             </Form.Control>
-          </Badge>
+          </Col>
         </Form.Group>
 
         <Form.Group className="mr-2 mb-2">
-          <Badge variant="info" className="p-2">
+          <Col>
             <Form.Label>Breaks</Form.Label>
             <Form.Control
               as="select"
@@ -41,12 +41,13 @@ const Options = ({ options, changeHandler }) => {
               <option value={180}>3:00</option>
               <option value={300}>5:00</option>
             </Form.Control>
-          </Badge>
+          </Col>
         </Form.Group>
 
         <Form.Group className="mr-2 mb-2">
-          <Badge variant="info" className="p-2">
+          <Col>
             <Form.Label>Countdown</Form.Label>
+
             <Form.Control
               as="select"
               name="countdown"
@@ -58,11 +59,11 @@ const Options = ({ options, changeHandler }) => {
               <option value={30}>0:30</option>
               <option value={60}>1:00</option>
             </Form.Control>
-          </Badge>
+          </Col>
         </Form.Group>
 
         <Form.Group className="mr-2 mb-2">
-          <Badge variant="info" className="p-2">
+          <Col>
             <Form.Label className="mr-1">Rounds</Form.Label>
             <Form.Control
               as="select"
@@ -79,10 +80,10 @@ const Options = ({ options, changeHandler }) => {
               <option value={15}>Superstar (15)</option>
               <option value={30}>G.O.A.T. (30)</option>
             </Form.Control>
-          </Badge>
+          </Col>
         </Form.Group>
       </Form>
-    </>
+    </Card>
   );
 };
 
